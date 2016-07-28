@@ -93,32 +93,37 @@
          scene.add( object );
      } );
 
-     var lineGeometry = new THREE.Geometry();
-     var points = [new THREE.Vector3( 0,0,0 ),
-                   new THREE.Vector3( 2,0,0 )];
-
      // LINES
-     var colors = [];
 
-     for ( i = 0; i < points.length; i ++ ) {
-         lineGeometry.vertices.push( points[ i ] );
-         colors[ i ] = new THREE.Color( 0xffffff );
-	 colors[ i ].setHSL( 0.6, 1.0, Math.max( 0, ( 200 - points[ i ].x ) / 400 ) * 0.5 + 0.5 );
+     for (j=0; j<50; j++) {
+         var lineGeometry = new THREE.Geometry();
+         var points = [new THREE.Vector3( 0,0,0 ),
+                       new THREE.Vector3( Math.random()*0.15 + 1.6 , 0 ,0 )];
+
+         var colors = [];
+
+         for ( i = 0; i < points.length; i ++ ) {
+             lineGeometry.vertices.push( points[ i ] );
+             colors[ i ] = new THREE.Color( 0xffffff );
+	     colors[ i ].setHSL( 0.6, 1.0, Math.max( 0, ( 200 - points[ i ].x ) / 400 ) * 0.5 + 0.5 );
+         }
+
+         lineGeometry.colors = colors;
+
+         var lineMaterial = new THREE.LineBasicMaterial( { color: 0xffffff, opacity: 1, linewidth: 3, vertexColors: THREE.VertexColors } );
+
+         var line = new THREE.Line( lineGeometry , lineMaterial );
+
+         line.scale.x = 2;
+         line.scale.y = 2;
+         line.scale.z = 2;
+         line.position.x = 0;
+         line.position.y = 0;
+         line.position.z = 0;
+         line.rotation.z = Math.random() * 2 * Math.PI;
+         line.rotation.y = Math.random() * 2 * Math.PI;
+         scene.add( line );
      }
-
-     lineGeometry.colors = colors;
-
-     var lineMaterial = new THREE.LineBasicMaterial( { color: 0xffffff, opacity: 1, linewidth: 3, vertexColors: THREE.VertexColors } );
-
-     var line = new THREE.Line( lineGeometry , lineMaterial );
-
-     line.scale.x = 2;
-     line.scale.y = 2;
-     line.scale.z = 2;
-     line.position.x = 0;
-     line.position.y = 0;
-     line.position.z = 0;
-     scene.add( line );
 
      // ANIMATE
      function animate() {
