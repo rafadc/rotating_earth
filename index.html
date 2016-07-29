@@ -134,10 +134,10 @@
 	 requestAnimationFrame( render );
 
          if (window.earth!=undefined && !window.mouseDown) {
-             window.earth.rotation.x += 0.0001;
+             window.earth.rotation.x -= 0.0001;
              window.earth.rotation.y += 0.01;
              for (i=0; i < window.lines.length; i++) {
-                 window.lines[i].rotation.x += 0.0001;
+                 window.lines[i].rotation.x -= 0.0001;
                  window.lines[i].rotation.y += 0.01;
              }
          }
