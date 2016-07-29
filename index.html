@@ -15,6 +15,32 @@
     <script src="vendor/TrackballControls.js"></script>
     <script src="vendor/CanvasRenderer.js"></script>
     <script src="vendor/MTLLoader.js"></script>
+    <script id="vertexShader" type="x-shader/x-vertex">
+     uniform vec3 viewVector;
+     uniform float c;
+     uniform float p;
+     varying float intensity;
+     void main()
+     {
+         vec3 vNormal = normalize( normalMatrix * normal );
+	 vec3 vNormel = normalize( normalMatrix * viewVector );
+	 intensity = pow( c - dot(vNormal, vNormel), p );
+
+         gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+     }
+    </script>
+
+    <!-- fragment shader a.k.a. pixel shader -->
+    <script id="fragmentShader" type="x-shader/x-vertex">
+     uniform vec3 glowColor;
+     varying float intensity;
+     void main()
+     {
+	 vec3 glow = glowColor * intensity;
+         gl_FragColor = vec4( glow, 1.0 );
+     }
+    </script>
+
     <script>
      function addLights(scene) {
          var light = new THREE.AmbientLight( 0x505050 ); // soft white light
@@ -80,21 +106,31 @@
      for (j=0; j<50; j++) {
          var lineGeometry = new THREE.Geometry();
          var points = [new THREE.Vector3( 0,0,0 ),
-                       new THREE.Vector3( Math.random()*0.15 + 1.2 , 0 ,0 )];
+                       new THREE.Vector3( Math.random()*0.25 + 1.1 , 0 ,0 )];
 
          var colors = [];
 
          for ( i = 0; i < points.length; i ++ ) {
              lineGeometry.vertices.push( points[ i ] );
-             colors[ i ] = new THREE.Color( 0xffffff );
-	     colors[ i ].setHSL( 0.3, 1.0, Math.max( 0, ( 200 - points[ i ].x ) / 400 ) * 0.5 + 0.5 );
          }
 
-         lineGeometry.colors = colors;
+         var glowMaterial = new THREE.ShaderMaterial(
+	     {
+	         uniforms:
+		           {
+			       "c":   { type: "f", value: 1.0 },
+			       "p":   { type: "f", value: 0.2 },
+			       glowColor: { type: "c", value: new THREE.Color(0x11ff00) },
+			       viewVector: { type: "v3", value: camera.position }
+		           },
+		 vertexShader:   document.getElementById( 'vertexShader'   ).textContent,
+		 fragmentShader: document.getElementById( 'fragmentShader' ).textContent,
+		 side: THREE.FrontSide,
+		 blending: THREE.AdditiveBlending,
+		 transparent: true
+	     }   );
 
-         var lineMaterial = new THREE.LineBasicMaterial( { color: 0xffffff, opacity: 1, linewidth: 3, vertexColors: THREE.VertexColors } );
-
-         var line = new THREE.Line( lineGeometry , lineMaterial );
+         var line = new THREE.Line( lineGeometry , glowMaterial );
 
          line.scale.x = 2;
          line.scale.y = 2;
