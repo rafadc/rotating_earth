@@ -10,7 +10,7 @@
       body {
         margin: 0;
         padding: 0;
-        background: #000000 url(/globe/loading.gif) center center no-repeat;
+        background: #000000 url(loading.gif) center center no-repeat;
         color: #ffffff;
         font-family: sans-serif;
         font-size: 13px;
@@ -128,7 +128,7 @@
       distanceTarget = 500;
 
       xhr = new XMLHttpRequest();
-      xhr.open('GET', '/globe/population909500.json', true);
+      xhr.open('GET', 'population909500.json', true);
       xhr.onreadystatechange = function(e) {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
